@@ -98,5 +98,23 @@ class TestCandidateInclusionMerge(unittest.TestCase):
             self.assertLessEqual(bar["low"], bar["high"])
 
 
+    def test_down_direction_equal_low_tracks_extrema_dates(self):
+        bars = [
+            {"date": "2026-10-01", "high": 12, "low": 8},
+            {"date": "2026-10-02", "high": 11, "low": 7},
+            {"date": "2026-10-03", "high": 10, "low": 7},
+        ]
+
+        result = merge_inclusions(bars)
+
+        self.assertEqual(len(result), 2)
+        merged = result[-1]
+        self.assertEqual(merged["high"], 10)
+        self.assertEqual(merged["low"], 7)
+        self.assertEqual(merged["high_date"], "2026-10-03")
+        self.assertEqual(merged["low_date"], "2026-10-02")
+        self.assertEqual(merged["date"], "2026-10-03")
+
+
 if __name__ == "__main__":
     unittest.main()

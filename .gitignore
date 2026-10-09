@@ -1,2 +1,8 @@
 __pycache__/
 *.py[cod]
+
+# Local market data
+/data/600000_daily.csv
+
+# Backup files
+*.bak

@@ -8,8 +8,7 @@ class TestCandidateInclusionMerge(unittest.TestCase):
             {"date": "2026-10-01", "high": 10, "low": 5},
             {"date": "2026-10-02", "high": 12, "low": 7},
         ]
-        result = merge_inclusions(bars)
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(merge_inclusions(bars)), 2)
 
     def test_up_direction_candidate(self):
         bars = [
@@ -43,17 +42,12 @@ class TestCandidateInclusionMerge(unittest.TestCase):
         with self.assertRaises(ValueError):
             merge_inclusions(bars)
 
-
-if __name__ == "__main__":
-    unittest.main()
-
-    def test_inclusion_equal_range_is_merged(self):
+    def test_equal_range_is_merged(self):
         bars = [
             {"date": "2026-10-01", "high": 10, "low": 5},
             {"date": "2026-10-02", "high": 10, "low": 5},
         ]
-        result = merge_inclusions(bars)
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(merge_inclusions(bars)), 1)
 
     def test_inclusion_chain_keeps_valid_range(self):
         bars = [
@@ -64,3 +58,7 @@ if __name__ == "__main__":
         result = merge_inclusions(bars)
         for bar in result:
             self.assertLessEqual(bar["low"], bar["high"])
+
+
+if __name__ == "__main__":
+    unittest.main()

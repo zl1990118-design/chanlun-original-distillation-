@@ -135,5 +135,36 @@ class TestCandidateInclusionMerge(unittest.TestCase):
         self.assertEqual(merged["date"], "2026-10-04")
 
 
+
+    def test_up_equal_high_keeps_first_date(self):
+        bars = [
+            {"date": "2026-10-01", "high": 10, "low": 5},
+            {"date": "2026-10-02", "high": 12, "low": 7},
+            {"date": "2026-10-03", "high": 12, "low": 8},
+        ]
+
+        result = merge_inclusions(bars)
+        merged = result[-1]
+
+        self.assertEqual(merged["high"], 12)
+        self.assertEqual(merged["high_date"], "2026-10-02")
+        self.assertEqual(merged["low"], 8)
+        self.assertEqual(merged["low_date"], "2026-10-03")
+
+    def test_down_equal_high_keeps_first_date(self):
+        bars = [
+            {"date": "2026-10-01", "high": 12, "low": 8},
+            {"date": "2026-10-02", "high": 10, "low": 6},
+            {"date": "2026-10-03", "high": 10, "low": 7},
+        ]
+
+        result = merge_inclusions(bars)
+        merged = result[-1]
+
+        self.assertEqual(merged["high"], 10)
+        self.assertEqual(merged["high_date"], "2026-10-02")
+        self.assertEqual(merged["low"], 6)
+        self.assertEqual(merged["low_date"], "2026-10-02")
+
 if __name__ == "__main__":
     unittest.main()

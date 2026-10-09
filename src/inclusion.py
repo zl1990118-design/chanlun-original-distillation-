@@ -1,5 +1,7 @@
+"""包含K线合并候选实现，规则仍需按缠论原文核验。"""
+
+
 def merge_inclusions(bars):
-    """合并相邻包含K线的候选实现；规则仍需按原文核验。"""
     result = []
 
     for bar in bars:
@@ -15,6 +17,12 @@ def merge_inclusions(bars):
         current = dict(bar)
         current["high"] = high
         current["low"] = low
+        current["high_date"] = (
+            current.get("high_date") or current.get("date")
+        )
+        current["low_date"] = (
+            current.get("low_date") or current.get("date")
+        )
 
         if not result:
             result.append(current)
@@ -51,12 +59,29 @@ def merge_inclusions(bars):
             direction = "unknown"
 
         if direction == "up":
+            if high > ph:
+                previous["high_date"] = current["high_date"]
+            if low > pl:
+                previous["low_date"] = current["low_date"]
+
             previous["high"] = max(ph, high)
             previous["low"] = max(pl, low)
+
         elif direction == "down":
+            if high < ph:
+                previous["high_date"] = current["high_date"]
+            if low < pl:
+                previous["low_date"] = current["low_date"]
+
             previous["high"] = min(ph, high)
             previous["low"] = min(pl, low)
+
         else:
+            if high > ph:
+                previous["high_date"] = current["high_date"]
+            if low < pl:
+                previous["low_date"] = current["low_date"]
+
             previous["high"] = max(ph, high)
             previous["low"] = min(pl, low)
 

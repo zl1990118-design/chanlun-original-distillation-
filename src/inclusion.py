@@ -48,15 +48,9 @@ def merge_inclusions(bars):
 
         prior = result[-2]
 
-        if (
-            previous["high"] > prior["high"]
-            and previous["low"] > prior["low"]
-        ):
+        if previous["high"] >= prior["high"]:
             direction = "up"
-        elif (
-            previous["high"] < prior["high"]
-            and previous["low"] < prior["low"]
-        ):
+        elif previous["low"] <= prior["low"]:
             direction = "down"
         else:
             raise ValueError(

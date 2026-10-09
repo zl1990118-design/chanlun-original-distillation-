@@ -51,16 +51,13 @@ class TestCandidateInclusionMerge(unittest.TestCase):
         with self.assertRaises(ValueError):
             merge_inclusions(bars)
 
-    def test_equal_range_is_merged(self):
+    def test_equal_range_without_direction_raises(self):
         bars = [
             {"date": "2026-10-01", "high": 10, "low": 5},
             {"date": "2026-10-02", "high": 10, "low": 5},
         ]
-        result = merge_inclusions(bars)
-
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["high_date"], "2026-10-01")
-        self.assertEqual(result[0]["low_date"], "2026-10-01")
+        with self.assertRaisesRegex(ValueError, "无法确定包含合并方向"):
+            merge_inclusions(bars)
 
     def test_inclusion_chain_keeps_valid_range(self):
         bars = [

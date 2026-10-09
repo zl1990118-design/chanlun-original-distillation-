@@ -1,4 +1,4 @@
-"""包含K线合并候选实现，规则仍需按缠论原文核验。"""
+"""包含K线合并候选实现；规则仍需按缠论原文核验。"""
 
 
 def merge_inclusions(bars):
@@ -40,23 +40,28 @@ def merge_inclusions(bars):
             result.append(current)
             continue
 
-        if len(result) >= 2:
-            prior = result[-2]
+        # 没有更早的K线，无法依据前序方向进行合并。
+        if len(result) < 2:
+            raise ValueError(
+                "无法确定包含合并方向：缺少前序方向依据"
+            )
 
-            if (
-                previous["high"] > prior["high"]
-                and previous["low"] > prior["low"]
-            ):
-                direction = "up"
-            elif (
-                previous["high"] < prior["high"]
-                and previous["low"] < prior["low"]
-            ):
-                direction = "down"
-            else:
-                direction = "unknown"
+        prior = result[-2]
+
+        if (
+            previous["high"] > prior["high"]
+            and previous["low"] > prior["low"]
+        ):
+            direction = "up"
+        elif (
+            previous["high"] < prior["high"]
+            and previous["low"] < prior["low"]
+        ):
+            direction = "down"
         else:
-            direction = "unknown"
+            raise ValueError(
+                "无法确定包含合并方向：前序K线关系异常"
+            )
 
         if direction == "up":
             if high > ph:
@@ -74,15 +79,6 @@ def merge_inclusions(bars):
                 previous["low_date"] = current["low_date"]
 
             previous["high"] = min(ph, high)
-            previous["low"] = min(pl, low)
-
-        else:
-            if high > ph:
-                previous["high_date"] = current["high_date"]
-            if low < pl:
-                previous["low_date"] = current["low_date"]
-
-            previous["high"] = max(ph, high)
             previous["low"] = min(pl, low)
 
         previous["date"] = current.get(

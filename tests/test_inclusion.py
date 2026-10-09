@@ -68,6 +68,24 @@ class TestCandidateInclusionMerge(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "无法确定包含合并方向"):
             merge_inclusions(bars)
 
+    def test_multiple_consecutive_inclusions_merge_in_order(self):
+        bars = [
+            {"date": "2026-10-01", "high": 10, "low": 5},
+            {"date": "2026-10-02", "high": 12, "low": 7},
+            {"date": "2026-10-03", "high": 11, "low": 8},
+            {"date": "2026-10-04", "high": 11.5, "low": 8.5},
+        ]
+
+        result = merge_inclusions(bars)
+
+        self.assertEqual(len(result), 2)
+        merged = result[-1]
+        self.assertEqual(merged["high"], 12)
+        self.assertEqual(merged["low"], 8.5)
+        self.assertEqual(merged["high_date"], "2026-10-02")
+        self.assertEqual(merged["low_date"], "2026-10-04")
+        self.assertEqual(merged["date"], "2026-10-04")
+
     def test_inclusion_chain_keeps_valid_range(self):
         bars = [
             {"date": "2026-10-01", "high": 10, "low": 5},
